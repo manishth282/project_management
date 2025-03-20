@@ -11,6 +11,7 @@ import RegisterPage from './Component/Login/RegisterPage';
 import GetProjectById from './Component/Project/GetProjectById';
 import UpdateProject from './Component/Project/UpdateProject';
 import GetAllEmployee from './Component/Employee/GetAllEmployee';
+import UpdateEmployee from './Component/Employee/UpdateEmployee';
 function App() {
   return (
     <BrowserRouter>
@@ -26,6 +27,7 @@ function App() {
         <Route path='/addProject' element={<AddProject />} />
         <Route path="/addemployee" element={<ADDEmploye/>} />
         <Route path="/getEmployee/:employeeId" element={<GetEmployee/>} />
+        <Route path="/updateEmployee/:employeeId" element={<UpdateEmployee/>} />
         <Route path="/getAllEmployee" element={<GetAllEmployee/>} />
         <Route path="/getAllProject" element={<GetAllProject/>}/>
         <Route path="/addManager" element={<AddManager/>}/>
