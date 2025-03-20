@@ -41,7 +41,7 @@ const ADDEmployee = () => {
       return;
     }
  
-    fetch("http://localhost:8082/createEmployee", {
+    fetch("http://localhost:8080/createEmployee", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +82,10 @@ const ADDEmployee = () => {
   };
  
   return (
-    <Container className="mt-5">
+    <div style={{ backgroundColor: "rgb(2,69,127,0.9)", color: "white", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+
+    <Container className="mt-5" style={{ padding: "20px", borderRadius: "20px", color: "white", maxWidth: "600px", backgroundColor: "rgb(30 41 59 / var(--tw-bg-opacity, 1))" }}>
+    <h2 className="text-center mb-4">Add Employee</h2>
         <Form onSubmit={handleSubmit}>
             <FormGroup>
                 <Label for="empId">Employee ID</Label>
@@ -137,6 +140,7 @@ const ADDEmployee = () => {
                 <Button color="primary">Submit</Button>
         </Form>
     </Container>
+    </div>
   );
 };
  
