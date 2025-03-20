@@ -36,8 +36,8 @@ const Home = () => {
   const handleGetAllProjectClick = () => {
     navigate("/getAllProject");
   };
-  const handleGetAlleEmployeeClick = () => {
-    navigate("/getEmployee");
+  const handleGetAllEmployeeClick = () => {
+    navigate("/getAllEmployee");
   };
 
   return (
@@ -77,7 +77,7 @@ const Home = () => {
             <Button color="light" className="mb-2 w-100 text-start" onClick={handleAddEmployeeClick}>
               ➕ Add Employee
             </Button>
-            <Button color="info" className="w-100 text-start" onClick={handleGetAlleEmployeeClick}>
+            <Button color="info" className="w-100 text-start" onClick={handleGetAllEmployeeClick}>
               getAllempoyee
             </Button>
             {/* <Button color="danger" className="w-100 text-start" onClick={() => setSelectedRole("Delete Employee")}>

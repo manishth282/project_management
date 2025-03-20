@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
-import { Table, Button } from "reactstrap";
+import { Table, Button, Container, Row, Col } from "reactstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+
 
 function GetAllEmployee() {
+    const navigate = useNavigate();
     const [employees, setEmployees] = useState([]);
     const [page, setPage] = useState(0); // 0-based index for backend
-    const limit = 20;
+    const limit = 10;
+    const [totalPages, setTotalPages]=useState();
     const [hasMore, setHasMore] = useState(true);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
+    
 
     // Handle checkbox selection
     const handleCheckboxChange = (empId) => {
@@ -28,7 +34,8 @@ function GetAllEmployee() {
 
             const data = await response.json();
             const newEmployees = data.content || data;
-
+            setTotalPages(data.totalPages);
+            
             setEmployees(newEmployees);
             setHasMore(newEmployees.length === limit); // If we got less than 20, no next page
         } catch (error) {
@@ -37,22 +44,27 @@ function GetAllEmployee() {
     };
 
     async function handleDelete() {
-        try {
-            const response = await fetch('http://localhost:8080/deleteEmployees', {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(selectedEmployees),
-            });
+        const isConfirm = window.confirm("Are you sure you want to delete the selected employees?");
+        if (isConfirm) {
+            try {
+                const response = await fetch('http://localhost:8080/deleteEmployees', {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(selectedEmployees),
+                });
 
-            if (response.status === 204) {
-                setSelectedEmployees([]); // Clear selected employees
-                fetchEmployees(page); // Re-fetch employees to update the list
+                if (response.status === 200) {
+                    alert("Employees deleted successfully!");
+                    setSelectedEmployees([]); // Clear selected employees
+                    fetchEmployees(page); // Re-fetch employees to update the list
+                }
+            } catch (error) {
+                console.error(error);
             }
-        } catch (error) {
-            console.error(error);
         }
+
     };
 
     useEffect(() => {
@@ -70,9 +82,9 @@ function GetAllEmployee() {
     };
 
     return (
-        <div className="Project_getEmp">
+        <div className="Project_getEmp" style={{ padding: "20px", backgroundColor: "rgb(2,69,127,0.9)", color: "blue", minHeight: "100vh" }}>
             {employees.length > 0 && (
-                <Table striped bordered>
+                <Table striped bordered >
                     <thead>
                         <tr>
                             <th>Select</th>
@@ -98,7 +110,7 @@ function GetAllEmployee() {
                                     />
                                 </td>
                                 <td>{page * limit + index + 1}</td>
-                                <td><Link to={`/updateEmployee/${emp.empId}`} key={emp.empId}>{emp.empId}</Link></td>
+                                <td><Link style={{ textDecoration: "none" }} to={`/getEmployee/${emp.empId}`} key={emp.empId}>{emp.empId}</Link></td>
                                 <td>{emp.empName}</td>
                                 <td>{emp.phone}</td>
                                 <td>{emp.email}</td>
@@ -113,21 +125,35 @@ function GetAllEmployee() {
             )}
 
             <div className="d-flex justify-content-between mt-3">
-                <Button color="secondary" onClick={handlePrev} disabled={page === 0}>
-                    Previous
-                </Button>
-
-                <Button
-                    color="danger"
-                    onClick={handleDelete}
-                    disabled={selectedEmployees.length === 0}
-                >
-                    Delete
-                </Button>
-
-                <Button color="primary" onClick={handleNext} disabled={!hasMore}>
-                    Next
-                </Button>
+                <Container fluid style={{ position: 'fixed', bottom: '0', left: '0', padding: '10px' }}>
+                    <Row>
+                        <Col xs={-12} md={6}>
+                            <Button
+                                color="secondary"
+                                onClick={() => { navigate(-1) }}
+                                style={{ marginLeft: "2%", marginRight: "2%" }}
+                            >
+                                Back
+                            </Button>
+                            <Button
+                                color="danger"
+                                onClick={handleDelete}
+                                disabled={selectedEmployees.length === 0}
+                            >
+                                Delete
+                            </Button>
+                        </Col>
+                        <Col xs={12} md={6} className="d-flex justify-content-end align-items-center">
+                            <Button onClick={handlePrev} disabled={page === 0}>
+                                &lt;
+                            </Button>
+                            <span className="mx-2" style={{color:"white"}}> Page {page + 1} of {totalPages}</span>
+                            <Button onClick={handleNext} disabled={!hasMore}>
+                                &gt;
+                            </Button>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         </div>
     );

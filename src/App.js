@@ -10,6 +10,7 @@ import LoginPage from './Component/Login/LoginPage';
 import RegisterPage from './Component/Login/RegisterPage';
 import GetProjectById from './Component/Project/GetProjectById';
 import UpdateProject from './Component/Project/UpdateProject';
+import GetAllEmployee from './Component/Employee/GetAllEmployee';
 function App() {
   return (
     <BrowserRouter>
@@ -24,7 +25,8 @@ function App() {
 
         <Route path='/addProject' element={<AddProject />} />
         <Route path="/addemployee" element={<ADDEmploye/>} />
-        <Route path="/getEmployee" element={<GetEmployee/>} />
+        <Route path="/getEmployee/:employeeId" element={<GetEmployee/>} />
+        <Route path="/getAllEmployee" element={<GetAllEmployee/>} />
         <Route path="/getAllProject" element={<GetAllProject/>}/>
         <Route path="/addManager" element={<AddManager/>}/>
         <Route path='/'element={<Home/>}/>
