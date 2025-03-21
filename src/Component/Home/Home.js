@@ -24,7 +24,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   const handleAddEmployeeClick = () => {
-    navigate("/addemployee");
+    navigate("/addEmployee");
   };
 
   const handleAddManagerClick = () => {

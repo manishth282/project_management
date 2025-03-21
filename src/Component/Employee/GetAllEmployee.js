@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import { Table, Button, Container, Row, Col } from "reactstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 
 function GetAllEmployee() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [employees, setEmployees] = useState([]);
-    const [page, setPage] = useState(0); // 0-based index for backend
+    const [page, setPage] = useState(location.state?.page ||0); // 0-based index for backend
+    
     const limit = 10;
     const [totalPages, setTotalPages]=useState();
     const [hasMore, setHasMore] = useState(true);
@@ -83,6 +85,7 @@ function GetAllEmployee() {
 
     return (
         <div className="Project_getEmp" style={{ padding: "20px", backgroundColor: "rgb(2,69,127,0.9)", color: "blue", minHeight: "100vh" }}>
+            <h2 style={{ color: "white" }}>Employees List</h2>
             {employees.length > 0 && (
                 <Table striped bordered >
                     <thead>
@@ -110,7 +113,7 @@ function GetAllEmployee() {
                                     />
                                 </td>
                                 <td>{page * limit + index + 1}</td>
-                                <td><Link style={{ textDecoration: "none" }} to={`/getEmployee/${emp.empId}`} key={emp.empId}>{emp.empId}</Link></td>
+                                <td><Link style={{ textDecoration: "none" }} to={`/getEmployee/${emp.empId}`} state={{page}} key={emp.empId}>{emp.empId}</Link></td>
                                 <td>{emp.empName}</td>
                                 <td>{emp.phone}</td>
                                 <td>{emp.email}</td>
@@ -130,7 +133,7 @@ function GetAllEmployee() {
                         <Col xs={-12} md={6}>
                             <Button
                                 color="secondary"
-                                onClick={() => { navigate(-1) }}
+                                onClick={() => { navigate('/') }}
                                 style={{ marginLeft: "2%", marginRight: "2%" }}
                             >
                                 Back

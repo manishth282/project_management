@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Table, Button, Container, Row, Col } from "reactstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 function GetEmployee() {
     const navigate = useNavigate();
     const [employee, setEmployee] = useState({});
     const { employeeId } = useParams();
+    const location = useLocation();
+    const page = location.state?.page || 0; // Retrieve the page state or default will be 0
     async function handleSearch() {
 
         try {
@@ -65,7 +67,7 @@ function GetEmployee() {
                     <Col xs={-12} md={6}>
                         <Button
                             color="secondary"
-                            onClick={() => { navigate(-1) }}
+                            onClick={() => { navigate(`/getAllEmployee`, { state: { page } }); }}
                         >
                             Back
                         </Button>

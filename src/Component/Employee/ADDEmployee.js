@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Form, FormGroup, Label, Input, Button, Container } from "reactstrap";
  
 const ADDEmployee = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     empId: "",
     empName: "",
@@ -40,7 +42,8 @@ const ADDEmployee = () => {
       alert("Please enter a valid 10-digit phone number");
       return;
     }
- 
+    console.log(formData);
+    
     fetch("http://localhost:8080/createEmployee", {
       method: "POST",
       headers: {
@@ -50,7 +53,7 @@ const ADDEmployee = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.status !== "200") {
+        if (data.status !== 201) {
           if (data.message === "Validation failed") {
             //All field's validation alert
             let messages = Object.values(data.errors).join("\n");
@@ -63,7 +66,7 @@ const ADDEmployee = () => {
             return false;
           }
         }
-        alert("Employee added successfully!");
+        alert("Employee added successfully.");
         // Clear form after submission
         setFormData({
           empId: "",
@@ -137,6 +140,7 @@ const ADDEmployee = () => {
             <FormGroup>
                
             </FormGroup>
+                <Button onClick={()=>{navigate(-1)}} style={{marginRight:"5px"}}>Back</Button>
                 <Button color="primary">Submit</Button>
         </Form>
     </Container>
