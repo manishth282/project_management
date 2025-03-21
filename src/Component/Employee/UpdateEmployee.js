@@ -1,38 +1,26 @@
-import { useState, useEffect } from "react";
-import { Table, Button, Container, Row, Col } from "reactstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Button, Col, Container, Row, Table } from "reactstrap";
 
-function GetEmployee() {
-    const navigate = useNavigate();
+function UpdateEmployee(){
+    const {employeeId} = useParams();
     const [employee, setEmployee] = useState({});
-    const { employeeId } = useParams();
-    async function handleSearch() {
-
-        try {
+    const navigate = useNavigate();
+    async function handleSearch(){
+        try{
             const response = await fetch(`http://localhost:8080/getEmployee/${employeeId}`);
-            if (!response.ok) {
-                throw new Error();
-            }
-            const employeeResponse = await response.json();
-            setEmployee(employeeResponse);
-
-        } catch (error) {
+            const data = await response.json();
+            setEmployee(data);
+        }catch(err){
             alert("Failed to connect with server");
         }
     }
-
     useEffect(() => {
         handleSearch();
     }, []);
-
-    function handleEdit(){
-        navigate(`/updateEmployee/${employeeId}`);
-    }
-
     return (
         <div className="Project_getEmp" style={{ padding: "20px", backgroundColor: "rgb(2,69,127,0.9)", color: "blue", minHeight: "100vh" }}>
-            <h2 style={{ color: "white" }}>Employee Details</h2>
+            <h2 style={{ color: "white" }}>Update Employee</h2>
             <Table striped bordered>
                 <thead>
                     <tr>
@@ -71,7 +59,7 @@ function GetEmployee() {
                         </Button>
                     </Col>
                     <Col className="d-flex justify-content-end align-items-center">
-                        <Button color="warning" style={{ color: "black", right: "10px" }} onClick={handleEdit}>
+                        <Button color="warning" style={{ color: "black", right: "10px" }} >
                             Edit
                         </Button>
                     </Col>
@@ -79,7 +67,8 @@ function GetEmployee() {
             </Container>
             </div>
         </div>
-    );
+);
 }
 
-export default GetEmployee;
+export default UpdateEmployee;
+
