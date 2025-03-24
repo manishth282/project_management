@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Table, Button, Container, Row, Col } from "reactstrap";
 // import 'bootstrap/dist/css/bootstrap.min.css';
-// import './getAllEmployee.css';
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 

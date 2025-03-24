@@ -1,6 +1,0 @@
-.fixed-width {
-    width: 150px; /* Adjust the width as needed */
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden; /* Hide overflow text */
-    text-overflow: ellipsis; /* Add ellipsis for overflow text */
-}
