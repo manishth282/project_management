@@ -14,7 +14,7 @@ function GetAllEmployee() {
     const [page, setPage] = useState(location.state?.page ||0); // 0-based index for backend
     
     const limit = 10;
-    const [totalPages, setTotalPages]=useState();
+    const [totalPages, setTotalPages]=useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     
@@ -40,9 +40,10 @@ function GetAllEmployee() {
             setTotalPages(data.totalPages);
             
             setEmployees(newEmployees);
-            setHasMore(newEmployees.length === limit); // If we got less than 20, no next page
+            setHasMore(newEmployees.length === limit); // If we got less than 10, no next page
         } catch (error) {
-            console.error("Fetch error:", error);
+            setHasMore(false);
+            alert("Failed to connect with server");
         }
     };
 
@@ -92,15 +93,15 @@ function GetAllEmployee() {
                     <thead>
                         <tr>
                             <th  style={{ width: '50px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Select</th>
-                            <th  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Index</th>
-                            <th  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Employee ID</th>
-                            <th  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Employee Name</th>
-                            <th  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Phone</th>
-                            <th  style={{ width: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Email</th>
-                            <th  style={{ width: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Designation</th>
-                            <th  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Salary</th>
-                            <th  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Location</th>
-                            <th  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Joining Date</th>
+                            <th >Index</th>
+                            <th >Employee ID</th>
+                            <th >Employee Name</th>
+                            <th >Phone</th>
+                            <th >Email</th>
+                            <th >Designation</th>
+                            <th >Salary</th>
+                            <th >Location</th>
+                            <th >Joining Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,15 +114,15 @@ function GetAllEmployee() {
                                         onChange={() => handleCheckboxChange(emp.empId)}
                                     />
                                 </td>
-                                <td  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{page * limit + index + 1}</td>
-                                <td  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}><Link style={{ textDecoration: "none" }} to={`/getEmployee/${emp.empId}`} state={{page}} key={emp.empId}>{emp.empId}</Link></td>
-                                <td  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{emp.empName}</td>
-                                <td  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{emp.phone}</td>
-                                <td  style={{ width: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{emp.email}</td>
-                                <td  style={{ width: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{emp.designation}</td>
-                                <td  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{emp.salary}</td>
-                                <td  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{emp.location}</td>
-                                <td  style={{ width: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{emp.joiningDate}</td>
+                                <td >{page * limit + index + 1}</td>
+                                <td ><Link style={{ textDecoration: "none" }} to={`/getEmployee/${emp.empId}`} state={{page}} key={emp.empId}>{emp.empId}</Link></td>
+                                <td >{emp.empName}</td>
+                                <td >{emp.phone}</td>
+                                <td >{emp.email}</td>
+                                <td >{emp.designation}</td>
+                                <td >{emp.salary}</td>
+                                <td >{emp.location}</td>
+                                <td >{emp.joiningDate}</td>
                             </tr>
                         ))}
                     </tbody>
