@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -10,9 +10,13 @@ import {
   Container,
   Button,
   Row,
-  Col
+  Col,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
 } from "reactstrap";
-import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronUp, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -21,8 +25,12 @@ const Home = () => {
   const [showEmployeeOptions, setShowEmployeeOptions] = useState(false);
   const [showManagerOptions, setShowManagerOptions] = useState(false);
   const [showProjectDetails, setShowProjectDetails] = useState(false);
+  const [uploadModal, setUploadModal] = useState(false);
+  const [file, setFile] = useState(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const fileInputRef = useRef(null);
   const handleAddEmployeeClick = () => {
     navigate("/addemployee");
   };
@@ -40,6 +48,95 @@ const Home = () => {
     navigate("/getAllEmployee");
   };
 
+  const toggleUploadModal = () => {setUploadModal(!uploadModal)
+    setFile(null);}
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    }
+  };
+  
+
+  const handleFile = (file) => {
+    const validTypes = [
+      "text/csv",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    ];
+    
+    if (validTypes.includes(file.type) || 
+        file.name.endsWith('.csv') || 
+        file.name.endsWith('.xlsx')) {
+      setFile(file);
+      setError("");
+    } else {
+      setError("Please upload a valid CSV or XLSX file");
+      setFile(null);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setFile(null);
+    // Reset the file input to allow selecting the same file again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!file) {
+      setError("Please select a file first");
+      return;
+    }
+    
+    // Here you would typically send the file to your backend
+    // For example using FormData and axios/fetch
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    // Example API call (you'll need to implement your actual endpoint)
+    /*
+    fetch("/api/upload", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert("File uploaded successfully!");
+      toggleUploadModal();
+    })
+    .catch(error => {
+      setError("Error uploading file: " + error.message);
+    });
+    */
+    
+    // For now, we'll just show a success message
+    alert(`File ${file.name} would be uploaded to the backend`);
+    toggleUploadModal();
+    setFile(null);
+  };
+  
   return (
     <div
       className="vh-100 d-flex"
@@ -80,9 +177,6 @@ const Home = () => {
             <Button color="info" className="w-100 text-start" onClick={handleGetAllEmployeeClick}>
               getAllempoyee
             </Button>
-            {/* <Button color="danger" className="w-100 text-start" onClick={() => setSelectedRole("Delete Employee")}>
-              ❌ Delete Employee
-            </Button> */}
           </div>
         )}
         {/* Project Button */}
@@ -102,7 +196,6 @@ const Home = () => {
             <Button color="info" className="w-100 text-start" onClick={handleGetAllProjectClick}>
               getAllProject
             </Button>
-       
           </div>
         )}
         {/* Manager Button */}
@@ -126,6 +219,14 @@ const Home = () => {
             </Button>
           </div>
         )}
+        <Button
+          color="primary"
+          className="mb-3 d-flex justify-content-between align-items-center"
+          onClick={toggleUploadModal}
+          style={{ fontSize: "1.25rem", width: "100%" }}
+        >
+          <Upload size={18} className="me-2" /> File Upload 
+        </Button>
       </div>
 
       {/* Main Content */}
@@ -165,6 +266,50 @@ const Home = () => {
           </Row>
         </Container>
       </div>
+
+      {/* File Upload Modal */}
+      <Modal isOpen={uploadModal} toggle={toggleUploadModal}>
+        <ModalHeader toggle={toggleUploadModal}>Upload File</ModalHeader>
+        <ModalBody>
+          <div 
+            className={`border-2 border-dashed rounded p-5 text-center ${dragActive ? "border-primary bg-light" : "border-secondary"}`}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          >
+            <Upload size={48} className="mb-3" />
+            <p>Drag and drop your CSV or XLSX file here</p>
+            <p className="text-muted">or</p>
+            <input
+              type="file"
+              id="file-upload"
+              accept=".csv,.xlsx"
+              onChange={handleChange}
+              className="d-none"
+              ref={fileInputRef}
+            />
+            <label htmlFor="file-upload" className="btn btn-primary">
+              Browse Files
+            </label>
+            {file && (
+              <div className="mt-3">
+                <p>Selected file: <strong>{file.name}</strong></p>
+                <p>Size: {(file.size / 1024).toFixed(2)} KB</p>
+              </div>
+            )}
+            {error && <div className="text-danger mt-2">{error}</div>}
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" onClick={handleRemoveFile} disabled={!file}>
+            Remove 
+          </Button>
+          <Button color="primary" onClick={handleSubmit} disabled={!file}>
+            Upload
+          </Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 };

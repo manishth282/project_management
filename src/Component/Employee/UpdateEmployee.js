@@ -6,6 +6,9 @@ function UpdateEmployee(){
     const {employeeId} = useParams();
     const [employee, setEmployee] = useState({});
     const navigate = useNavigate();
+    
+
+
     async function handleSearch(){
         try{
             const response = await fetch(`http://localhost:8080/getEmployee/${employeeId}`);
@@ -18,9 +21,49 @@ function UpdateEmployee(){
     useEffect(() => {
         handleSearch();
     }, []);
+
+    const handleChange = (a) => {
+        setEmployee({ ...employee, [a.target.name]: a.target.value });
+      };
+
+    const handleSave = (event) => {
+        event.preventDefault();
+
+        fetch("http://localhost:8080/updateEmployee", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(employee),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status !== "200") {
+              if (data.message === "Validation failed") {
+                //All field's validation alert
+                let messages = Object.values(data.errors).join("\n");
+                alert(messages);
+                return false;
+                // throw new Error(messages);
+              } else {
+                //EmpId and phone no. validation failed alert
+                alert(data.message);
+                return false;
+              }
+            }
+            alert("Employee details edited successfully!");
+            // Clear form after submission
+           
+          })
+          .catch((errors) => {
+            alert('Failed to connect with server');
+          });
+      };
+
     return (
         <div className="Project_getEmp" style={{ padding: "20px", backgroundColor: "rgb(2,69,127,0.9)", color: "blue", minHeight: "100vh" }}>
-            <h2 style={{ color: "white" }}>Update Employee</h2>
+            <h2 style={{ color: "white" }}>Employee Details</h2>
+            
             <Table striped bordered>
                 <thead>
                     <tr>
@@ -36,14 +79,31 @@ function UpdateEmployee(){
                 </thead>
                 <tbody>
                     <tr key={employee.empId} className={"table-success"}>
-                        <td>{employee.empId}</td>
-                        <td>{employee.empName}</td>
-                        <td>{employee.phone}</td>
-                        <td>{employee.email}</td>
-                        <td>{employee.designation}</td>
-                        <td>{employee.salary}</td>
-                        <td>{employee.location}</td>
-                        <td>{employee.joiningDate}</td>
+                        <td >
+                            <input type="text" id='empId' name= 'empId' style={{width: '100%'}} value={employee.empId} onChange={handleChange}></input>
+                        </td>
+                        <td>
+                            <input type="text" id='empName' name= 'empName' style={{width: '100%'}} value={employee.empName} onChange={handleChange}></input>
+                        </td>
+                        <td>
+                            <input type="text" id= 'phone' name= 'phone' style={{width: '100%'}} value={employee.phone} onChange={handleChange}></input>
+                        </td>
+
+                        <td>
+                            <input type="email" id= 'email' name= 'email' style={{width: '100%'}} value={employee.email} onChange={handleChange}></input>
+                        </td>
+                        <td>
+                            <input type="text" id= 'designation' name= 'designation' style={{width: '100%'}} value={employee.designation} onChange={handleChange}></input>
+                        </td>
+                        <td>
+                            <input type="text" id= 'salary' name= 'salary' style={{width: '100%'}} value={employee.salary} onChange={handleChange}></input>
+                        </td>
+                        <td>
+                            <input type="text" id= 'location' name= 'location' style={{width: '100%'}} value={employee.location} onChange={handleChange}></input>
+                        </td>
+                        <td>
+                            <input type="date" id= 'joiningDate' name= 'joiningDate' style={{width: '100%'}} value={employee.joiningDate} onChange={handleChange}></input>
+                        </td>
                     </tr>
                 </tbody>
             </Table>
@@ -59,8 +119,8 @@ function UpdateEmployee(){
                         </Button>
                     </Col>
                     <Col className="d-flex justify-content-end align-items-center">
-                        <Button color="warning" style={{ color: "black", right: "10px" }} >
-                            Edit
+                        <Button color="success" style={{ color: "black", right: "10px" }} onClick={handleSave} >
+                            Save
                         </Button>
                     </Col>
                 </Row>

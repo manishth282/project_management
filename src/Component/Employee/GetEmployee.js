@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import { Table, Button, Container, Row, Col } from "reactstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 function GetEmployee() {
     const navigate = useNavigate();
     const [employee, setEmployee] = useState({});
     const { employeeId } = useParams();
+    const location = useLocation();
+    const page=location.state?.page;
+    console.log("getEmps"+page);
+    
     async function handleSearch() {
 
         try {
@@ -26,7 +30,7 @@ function GetEmployee() {
         handleSearch();
     }, []);
 
-    function handleEdit(){
+    function handleEdit() {
         navigate(`/updateEmployee/${employeeId}`);
     }
 
@@ -60,23 +64,23 @@ function GetEmployee() {
                 </tbody>
             </Table>
             <div className="d-flex justify-content-between mt-3">
-            <Container fluid>
-                <Row>
-                    <Col xs={-12} md={6}>
-                        <Button
-                            color="secondary"
-                            onClick={() => { navigate(-1) }}
-                        >
-                            Back
-                        </Button>
-                    </Col>
-                    <Col className="d-flex justify-content-end align-items-center">
-                        <Button color="warning" style={{ color: "black", right: "10px" }} onClick={handleEdit}>
-                            Edit
-                        </Button>
-                    </Col>
-                </Row>
-            </Container>
+                <Container fluid>
+                    <Row>
+                        <Col xs={-12} md={6}>
+                            <Button
+                                color="secondary"
+                                onClick={() => { navigate("/getAllEmployee",{ state: {page} }) }}
+                            >
+                                Back
+                            </Button>
+                        </Col>
+                        <Col className="d-flex justify-content-end align-items-center">
+                            <Button color="warning" style={{ color: "black", right: "10px" }} onClick={handleEdit}>
+                                Edit
+                            </Button>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         </div>
     );

@@ -3,17 +3,23 @@ import { Table, Button, Container, Row, Col } from "reactstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 
 
 function GetAllEmployee() {
+    const location = useLocation();
+    console.log("getAllEmp"+location.state?.page);
+    
     const navigate = useNavigate();
     const [employees, setEmployees] = useState([]);
-    const [page, setPage] = useState(0); // 0-based index for backend
+    const [page, setPage] = useState(location.state?.page || 0); // 0-based index for backend
     const limit = 10;
     const [totalPages, setTotalPages]=useState();
     const [hasMore, setHasMore] = useState(true);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
+    // setPage();
+    
     
 
     // Handle checkbox selection
@@ -110,7 +116,7 @@ function GetAllEmployee() {
                                     />
                                 </td>
                                 <td>{page * limit + index + 1}</td>
-                                <td><Link style={{ textDecoration: "none" }} to={`/getEmployee/${emp.empId}`} key={emp.empId}>{emp.empId}</Link></td>
+                                <td><Link style={{ textDecoration: "none" }} to={`/getEmployee/${emp.empId}`} state={{page}} key={emp.empId}>{emp.empId}</Link></td>
                                 <td>{emp.empName}</td>
                                 <td>{emp.phone}</td>
                                 <td>{emp.email}</td>
